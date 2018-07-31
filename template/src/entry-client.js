@@ -29,6 +29,10 @@ const { app, router, store } = createApp()
 // prime the store with server-initialized state.
 // the state is determined during SSR and inlined in the page markup.
 if (window.__INITIAL_STATE__) {
+    var hacks = require('viewport-units-buggyfill/viewport-units-buggyfill.hacks');
+    require('viewport-units-buggyfill').init({
+        hacks: hacks
+    });
   store.replaceState(window.__INITIAL_STATE__)
 }
 
