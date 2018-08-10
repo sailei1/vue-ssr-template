@@ -17,7 +17,7 @@ if(build_type==='SPA'){
     };
 }
 
-let index_html=build_type==='PWA' ? '../dist_spa/index.html' : '../dist/index.html';
+let index_html=build_type==='PWA' ? '../dist/index.html' : '../dist_spa/index.html';
 
 
 
@@ -84,7 +84,7 @@ if (process.env.NODE_ENV === 'production') {
   )
     config.plugins.push(
         new HtmlWebpackPlugin({
-            filename: path.resolve(__dirname, '../dist/index.html'),
+            filename: path.resolve(__dirname, index_html),
             template: 'src/index_spa.template.html',
             inject: true,
             minify: {
