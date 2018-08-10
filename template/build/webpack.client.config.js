@@ -3,20 +3,29 @@ const merge = require('webpack-merge')
 const base = require('./webpack.base.config')
 const SWPrecachePlugin = require('sw-precache-webpack-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
-// const Category = require('../src/config/category');
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const build_type=process.env.TYPE;
+
+let output={};
+if(build_type==='SPA'){
+    output={
+        path: path.resolve(__dirname,   '../dist_spa'),
+        publicPath: '/',
+        filename: '[name].[chunkhash].js'
+    };
+}
+
+let index_html=build_type==='PWA' ? '../dist_spa/index.html' : '../dist/index.html';
+
+
 
 const config = merge(base, {
   entry: {
     app: './src/entry-client.js'
   },
-    output: {
-        path: path.resolve(__dirname, '../dist'),
-        publicPath: '/',
-        filename: '[name].[chunkhash].js'
-    },
+    output: output,
   resolve: {
     alias: {
       'create-api': './create-api-client.js'
@@ -56,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
   config.plugins.push(
     // auto generate service worker
     new SWPrecachePlugin({
-      cacheId: 'vue-ssr',
+      cacheId: 'sai-vue-ssr',
       filename: 'service-worker.js',
       minify: false,
       dontCacheBustUrlsMatching: /./,
@@ -99,6 +108,10 @@ if (process.env.NODE_ENV === 'production') {
             }
         ])
     )
-}
 
+    if (process.env.npm_config_report) {
+        const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+        config.plugins.push(new BundleAnalyzerPlugin())
+    }
+}
 module.exports = config
